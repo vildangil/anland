@@ -74,8 +74,8 @@ prepare_mutter_stage() {
     tar -czf "$MUTTER_STAGE/mutter-overlay.tar.gz" -C "$MUTTER_OVERLAY_ROOT" src
     cp "$SCRIPT_DIR/PKGBUILD" "$SCRIPT_DIR/mutter.patch" "$MUTTER_STAGE/"
     # makepkg verifies cached and downloaded archives against the PKGBUILD SHA512.
-    if [[ -f "$SOURCE_CACHE/mutter-50.5.complete.tar.gz" ]]; then
-        cp -f "$SOURCE_CACHE/mutter-50.5.complete.tar.gz" "$MUTTER_SRCDEST_DIR/mutter-50.5.tar.gz"
+    if [[ -f "$SOURCE_CACHE/mutter-51.1.complete.tar.gz" ]]; then
+        cp -f "$SOURCE_CACHE/mutter-51.1.complete.tar.gz" "$MUTTER_SRCDEST_DIR/mutter-51.1.tar.gz"
     fi
     if [[ -f "$SOURCE_CACHE/gvdb-b54bc5da.tar.gz" ]]; then
         cp -f "$SOURCE_CACHE/gvdb-b54bc5da.tar.gz" "$MUTTER_SRCDEST_DIR/gvdb-b54bc5da.tar.gz"
