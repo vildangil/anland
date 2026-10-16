@@ -57,6 +57,12 @@ if ! git -C "$repo" merge --no-ff --no-edit "$patched50"; then
   git -C "$repo" diff --name-only --diff-filter=U || true
   echo "Conflict count: $(git -C "$repo" ls-files -u | cut -f2 | sort -u | wc -l)"
   git -C "$repo" diff --stat || true
+  if [[ -n "${PORT_REPORT_DIR:-}" ]]; then
+    mkdir -p "$PORT_REPORT_DIR"
+    git -C "$repo" diff --name-only --diff-filter=U > "$PORT_REPORT_DIR/conflict-files.txt"
+    git -C "$repo" diff > "$PORT_REPORT_DIR/rebase-conflicts.diff" || true
+    git -C "$repo" status --short > "$PORT_REPORT_DIR/rebase-status.txt"
+  fi
   exit 2
 fi
 
