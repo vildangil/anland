@@ -116,7 +116,8 @@ build() {
     -D installed_tests=false
     -D tests=disabled
     -D anland=enabled
-    -D c_args=-DANLAND_MUTTER_51
+    # Keep the modern (Mutter 50+) compatibility branch in the shared backend.
+    -D c_args=-DANLAND_MUTTER_50
 
   )
 
