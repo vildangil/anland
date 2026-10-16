@@ -53,8 +53,20 @@ git -C "$repo" checkout -q --detach "$synthetic51"
 
 echo "Rebasing AnLand from Mutter 50.5 to Mutter 51.1..."
 if ! git -C "$repo" merge --no-ff --no-edit "$patched50"; then
-  echo "::error::AnLand patch needs manual conflict resolution for Mutter 51.1."
-  git -C "$repo" diff --name-only --diff-filter=U || true
+  echo "The first merge found conflicts; resolving the five reviewed Mutter 51.1 API transitions..."
+  if python3 "$here/resolve-mutter-51.py" "$repo"; then
+    git -C "$repo" add -- config.h.meson meson.build meson.options \
+      src/backends/native/meta-renderer-native.c src/core/meta-context-main.c
+    if [ -z "$(git -C "$repo" ls-files -u)" ]; then
+      git -C "$repo" commit -q -m 'Port AnLand Meson and native backend integration to Mutter 51.1'
+      echo "All five known conflicts resolved. Compiling the port is still required."
+    else
+      echo "Unknown Git merge conflicts remain."
+      exit 2
+    fi
+  else
+    echo "::error::Automatic resolution failed: see conflict report and source changes."
+    git -C "$repo" diff --name-only --diff-filter=U || true
   echo "Conflict count: $(git -C "$repo" ls-files -u | cut -f2 | sort -u | wc -l)"
   git -C "$repo" diff --stat || true
   if [[ -n "${PORT_REPORT_DIR:-}" ]]; then
@@ -63,7 +75,8 @@ if ! git -C "$repo" merge --no-ff --no-edit "$patched50"; then
     git -C "$repo" diff > "$PORT_REPORT_DIR/rebase-conflicts.diff" || true
     git -C "$repo" status --short > "$PORT_REPORT_DIR/rebase-status.txt"
   fi
-  exit 2
+    exit 2
+  fi
 fi
 
 mkdir -p "$(dirname -- "$output")"
