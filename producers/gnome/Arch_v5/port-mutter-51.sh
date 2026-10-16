@@ -54,7 +54,8 @@ git -C "$repo" checkout -q --detach "$synthetic51"
 echo "Rebasing AnLand from Mutter 50.5 to Mutter 51.1..."
 if ! git -C "$repo" merge --no-ff --no-edit "$patched50"; then
   echo "The first merge found conflicts; resolving the five reviewed Mutter 51.1 API transitions..."
-  if python3 "$here/resolve-mutter-51.py" "$repo"; then
+  if python3 "$here/resolve-mutter-51.py" "$repo" && \
+     python3 "$here/port-cogl51.py" "$repo"; then
     git -C "$repo" add -- config.h.meson meson.build meson.options \
       src/backends/native/meta-renderer-native.c src/core/meta-context-main.c
     if [ -z "$(git -C "$repo" ls-files -u)" ]; then
